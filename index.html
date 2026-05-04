@@ -251,6 +251,7 @@ input[type="time"]::-webkit-calendar-picker-indicator,input[type="date"]::-webki
 .restaurant-card{background:#fff;border-radius:16px;margin-bottom:12px;overflow:hidden;box-shadow:0 1px 4px rgba(0,0,0,0.04),0 4px 12px rgba(0,0,0,0.04);cursor:pointer;transition:transform 0.15s}
 .restaurant-card:active{transform:scale(0.98)}
 .restaurant-photo{height:130px;background-size:cover;background-position:center;position:relative;display:flex;align-items:center;justify-content:center;font-size:64px}
+.photo-emoji-fallback{position:absolute;bottom:8px;right:50%;transform:translateX(50%);font-size:28px;background:rgba(15,23,42,0.65);width:42px;height:42px;border-radius:50%;display:flex;align-items:center;justify-content:center;backdrop-filter:blur(6px);box-shadow:0 4px 12px rgba(0,0,0,0.2)}
 .restaurant-photo .badge{position:absolute;top:8px;right:8px;background:rgba(15,23,42,0.85);color:#fff;padding:4px 10px;border-radius:10px;font-size:11px;font-weight:700;display:flex;align-items:center;gap:3px;backdrop-filter:blur(6px)}
 .restaurant-photo .open-tag{position:absolute;top:8px;left:8px;background:var(--green);color:#fff;padding:3px 9px;border-radius:8px;font-size:10.5px;font-weight:700}
 .restaurant-photo .open-tag.closed{background:var(--muted)}
@@ -263,7 +264,7 @@ input[type="time"]::-webkit-calendar-picker-indicator,input[type="date"]::-webki
 .restaurant-tag{background:var(--bg);color:var(--muted);font-size:10.5px;font-weight:500;padding:2px 8px;border-radius:8px}
 .restaurant-tag.discount{background:#fef3c7;color:var(--gold-deep);font-weight:700}
 
-#page-restaurant-detail .detail-photo{height:200px;background-size:cover;background-position:center;display:flex;align-items:center;justify-content:center;font-size:96px;border-radius:16px;margin-bottom:14px}
+#page-restaurant-detail .detail-photo{height:200px;background-size:cover;background-position:center;position:relative;display:flex;align-items:center;justify-content:center;font-size:96px;border-radius:16px;margin-bottom:14px;overflow:hidden}
 .detail-name{font-size:22px;font-weight:800;color:var(--text);margin-bottom:4px}
 .detail-rating-row{display:flex;align-items:center;gap:8px;margin-bottom:10px}
 .detail-rating{display:flex;align-items:center;gap:3px;font-weight:700;font-size:14px}
@@ -547,8 +548,8 @@ input[type="time"]::-webkit-calendar-picker-indicator,input[type="date"]::-webki
       <div style="display:flex;align-items:center;gap:10px;">
         <div style="font-size:24px;">💡</div>
         <div style="flex:1;">
-          <div style="font-size:12.5px;font-weight:700;color:#78350f;">คุณกำลังใช้โหมด Demo</div>
-          <div style="font-size:11px;color:#92400e;margin-top:2px;">เข้าสู่ระบบเพื่อบันทึกข้อมูลข้ามอุปกรณ์ + รับแจ้งเตือนจริง</div>
+          <div style="font-size:12.5px;font-weight:700;color:#78350f;">โหมด Demo · ใช้งานชั่วคราว</div>
+          <div style="font-size:11px;color:#92400e;margin-top:2px;">เข้าสู่ระบบเพื่อเก็บแต้มและภารกิจไว้ข้ามอุปกรณ์</div>
         </div>
         <div style="font-size:18px;color:#92400e;">›</div>
       </div>
@@ -713,11 +714,14 @@ input[type="time"]::-webkit-calendar-picker-indicator,input[type="date"]::-webki
   <main class="page" id="page-guide">
     <div class="guide-hero">
       <h2>🍜 MOTOGUIDE</h2>
-      <p>รีวิวร้านอาหารใกล้ ม.มหิดล ศาลายา · พร้อมส่วนลดสำหรับสมาชิก MotoGuard</p>
+      <p>รีวิวร้านอาหาร <b id="guide-count">22</b> ร้านใกล้ ม.มหิดล ศาลายา · พร้อมส่วนลดสำหรับสมาชิก MotoGuard</p>
       <div class="guide-search">
         <span>🔍</span>
         <input type="text" placeholder="ค้นหาร้าน..." id="guide-search-input" oninput="renderRestaurants()">
       </div>
+    </div>
+    <div style="font-size:12px;color:var(--muted);margin:6px 4px 8px;text-align:center;">
+      📊 <b id="guide-result-count">0</b> ร้านที่ตรงกับการค้นหา
     </div>
     <div class="cuisine-filters" id="cuisine-filters"></div>
     <div id="restaurants-list"></div>
@@ -847,7 +851,7 @@ input[type="time"]::-webkit-calendar-picker-indicator,input[type="date"]::-webki
   <!-- REWARDS -->
   <main class="page" id="page-rewards">
     <div class="profile-circle" id="rewards-avatar">👤</div>
-    <div class="profile-name">MotoGuard Expert</div>
+    <div class="profile-name" id="rewards-name">ผู้ใช้</div>
     <div class="profile-tier">⭐ GOLD MEMBER</div>
     <div class="points-card">
       <div class="points-card-label">Moto Point ของคุณ</div>
@@ -871,8 +875,8 @@ input[type="time"]::-webkit-calendar-picker-indicator,input[type="date"]::-webki
     <div class="profile-header">
       <div class="avatar" id="profile-avatar">👤</div>
       <div>
-        <div class="name">MotoGuard Expert</div>
-        <div class="badge">⭐ GOLD MEMBER · <span id="profile-points">99</span> pts</div>
+        <div class="name" id="profile-name">ผู้ใช้</div>
+        <div class="badge">⭐ <span id="profile-tier">GOLD</span> · <span id="profile-points">99</span> pts</div>
       </div>
     </div>
     <div class="settings-card">
@@ -1070,6 +1074,13 @@ input[type="time"]::-webkit-calendar-picker-indicator,input[type="date"]::-webki
   </div>
 </div>
 
+<!-- MISSION MODAL — interactive missions -->
+<div class="modal-backdrop" id="mission-modal">
+  <div class="modal-card" style="text-align:left;max-width:400px;">
+    <div id="mission-modal-content"></div>
+  </div>
+</div>
+
 <!-- HELP MODAL -->
 <div class="modal-backdrop" id="help-modal">
   <div class="modal-card" style="text-align:left;">
@@ -1119,18 +1130,28 @@ const SEED_REPORTS=[
 
 // Real restaurants near Mahidol Salaya
 const RESTAURANTS=[
-  {id:'r1',name:'Music Square',emoji:'🎵',cuisine:'ไทย-ตะวันตก',lat:13.7950,lng:100.3250,rating:4.5,reviews:187,priceRange:300,hours:'10:00-19:00',distance:'0.2 กม.',tags:['ไทย','ตะวันตก','คาเฟ่'],discount:15,color:'#10b981',desc:'ร้านอาหารในวิทยาลัยดุริยางคศิลป์ ม.มหิดล บรรยากาศร่มรื่นท่ามกลางต้นไม้ มีอาหารไทย-ตะวันตกหลากหลาย'},
-  {id:'r2',name:"Anya's Place",emoji:'🍷',cuisine:'ฟิวชั่น',lat:13.7920,lng:100.3300,rating:4.7,reviews:234,priceRange:400,hours:'11:00-22:00',distance:'0.5 กม.',tags:['ฟิวชั่น','ไวน์','dessert'],discount:20,color:'#f59e0b',desc:'ร้านอาหารฟิวชั่นไทย-ตะวันตก เจ้าของจบจากลอนดอน เมนูคุณภาพสูง'},
-  {id:'r3',name:'MotherCows Salaya',emoji:'🥛',cuisine:'นม-ขนมปัง',lat:13.7960,lng:100.3220,rating:4.3,reviews:142,priceRange:150,hours:'07:30-19:00',distance:'0.1 กม.',tags:['นมสด','คาเฟ่','ขนมปังถ่าน'],discount:10,color:'#fbbf24',desc:'ร้านนมสดและขนมปังย่างถ่าน ตรงข้ามมหิดล นั่งจิบกาแฟแบบสบายๆ'},
-  {id:'r4',name:'Korae Korean BBQ',emoji:'🥩',cuisine:'เกาหลี',lat:13.7935,lng:100.3260,rating:4.4,reviews:312,priceRange:350,hours:'17:00-23:00',distance:'0.3 กม.',tags:['BBQ','บุฟเฟ่ต์','เกาหลี'],discount:15,color:'#dc2626',desc:'Korean BBQ บุฟเฟ่ต์ราคาคุ้มที่สุดในศาลายา ชั้นพอร์คเด็ดมาก'},
-  {id:'r5',name:'Santoku Ramen',emoji:'🍜',cuisine:'ญี่ปุ่น',lat:13.7918,lng:100.3245,rating:4.5,reviews:267,priceRange:200,hours:'11:00-23:00',distance:'0.3 กม.',tags:['ราเมง','ญี่ปุ่น','late night'],discount:12,color:'#7c3aed',desc:'ราเมงญี่ปุ่นเปิดดึก เจ้าโปรดของนักศึกษามหิดลที่ต้องเรียนค่ำ'},
-  {id:'r6',name:'Little Tree Grocery',emoji:'☕',cuisine:'คาเฟ่',lat:13.7980,lng:100.3210,rating:4.6,reviews:198,priceRange:180,hours:'08:00-20:00',distance:'0.6 กม.',tags:['กาแฟ','เบเกอรี่','สวน'],discount:12,color:'#92400e',desc:'คาเฟ่บ้านไม้บรรยากาศคันทรี มีต้นไม้ใหญ่และสวนหลังบ้าน เหมาะนั่งทำงาน'},
-  {id:'r7',name:'Tianti Chicken Rice',emoji:'🍗',cuisine:'ไทย',lat:13.7912,lng:100.3268,rating:4.4,reviews:156,priceRange:80,hours:'10:00-21:00',distance:'0.4 กม.',tags:['ข้าวมันไก่','สมุนไพร','สุขภาพดี'],discount:10,color:'#65a30d',desc:'ข้าวมันไก่เลี้ยงด้วยสมุนไพรและโพรไบโอติกส์ ใช้น้ำมันไก่ 100% เนื้อนุ่มหอม'},
-  {id:'r8',name:'โกวเล็กสุกี้ฮ่องกง',emoji:'🍲',cuisine:'จีน',lat:13.7925,lng:100.3275,rating:4.3,reviews:188,priceRange:200,hours:'11:00-22:00',distance:'0.4 กม.',tags:['สุกี้','กุ้งอบวุ้นเส้น','ฮ่องกง'],discount:12,color:'#ec4899',desc:'สุกี้ฮ่องกงน้ำจิ้มหอม กุ้งอบวุ้นเส้นเด็ด เห็นสั่งกันเกือบทุกโต๊ะ'},
-  {id:'r9',name:'มันม่วงขนมไข่เต่า',emoji:'🥧',cuisine:'ของว่าง',lat:13.7940,lng:100.3255,rating:4.6,reviews:421,priceRange:30,hours:'09:00-19:00',distance:'0.0 กม.',tags:['มันม่วง','ขนมไข่เต่า','ของว่าง'],discount:5,color:'#a855f7',desc:'ขนมไข่เต่าหน้ามหิดล แป้งกรอบ ข้างในเส้นใยมันม่วงนุ่ม หวานธรรมชาติ ลูกใหญ่ไม่อมน้ำมัน'},
-  {id:'r10',name:'ก๋วยเตี๋ยวเรือศาลายา',emoji:'🍜',cuisine:'ไทย',lat:13.7935,lng:100.3265,rating:4.6,reviews:512,priceRange:50,hours:'09:00-20:00',distance:'0.3 กม.',tags:['ก๋วยเตี๋ยว','ราคาถูก','เด็ด'],discount:8,color:'#f97316',desc:'ก๋วยเตี๋ยวเรือชามละ 25 บาท น้ำซุปเข้มข้น เปิดมานานเป็นที่นิยมของนักศึกษามหิดล'},
-  {id:'r11',name:'Mahidol Food Center',emoji:'🍛',cuisine:'ไทย',lat:13.7945,lng:100.3245,rating:4.0,reviews:621,priceRange:60,hours:'07:00-19:00',distance:'0.0 กม.',tags:['ในม.','ราคาประหยัด','street food'],discount:5,color:'#0ea5e9',desc:'ศูนย์อาหารใน ม.มหิดล มีอาหารหลากหลาย ราคานักศึกษา'},
-  {id:'r12',name:"ปู๊ตี่ บะหมี่เกี๊ยวกุ้ง",emoji:'🍤',cuisine:'จีน',lat:13.7942,lng:100.3262,rating:4.5,reviews:278,priceRange:70,hours:'08:00-20:00',distance:'0.2 กม.',tags:['บะหมี่','เกี๊ยวกุ้ง','หมูแดง'],discount:8,color:'#fb923c',desc:'เกี๊ยวชิ้นใหญ่ เนื้อแน่น หมูแดงเด็ด เป็นที่นิยมของนักศึกษามหิดล'},
+  {id:'r1',name:'Music Square',emoji:'🎵',cuisine:'ไทย-ตะวันตก',lat:13.7950,lng:100.3250,rating:4.5,reviews:187,priceRange:300,hours:'10:00-19:00',distance:'0.2 กม.',tags:['ไทย','ตะวันตก','คาเฟ่'],discount:15,color:'#10b981',img:'https://images.unsplash.com/photo-1414235077428-338989a2e8c0?w=600',desc:'ร้านอาหารในวิทยาลัยดุริยางคศิลป์ ม.มหิดล บรรยากาศร่มรื่นท่ามกลางต้นไม้ มีอาหารไทย-ตะวันตกหลากหลาย ข้าวผัดมันกุ้งและพิซซ่าเด็ด'},
+  {id:'r2',name:"Anya's Place",emoji:'🍷',cuisine:'ฟิวชั่น',lat:13.7920,lng:100.3300,rating:4.7,reviews:234,priceRange:400,hours:'11:00-22:00',distance:'0.5 กม.',tags:['ฟิวชั่น','ไวน์','dessert'],discount:20,color:'#f59e0b',img:'https://images.unsplash.com/photo-1517248135467-4c7edcad34c4?w=600',desc:'ร้านอาหารฟิวชั่นไทย-ตะวันตก เจ้าของจบจากลอนดอน เมนูคุณภาพสูง สเต็กเซตคุ้มมาก เค้กและคุกกี้เด็ด'},
+  {id:'r3',name:'MotherCows Salaya',emoji:'🥛',cuisine:'นม-ขนมปัง',lat:13.7960,lng:100.3220,rating:4.3,reviews:142,priceRange:150,hours:'07:30-19:00',distance:'0.1 กม.',tags:['นมสด','คาเฟ่','ขนมปังถ่าน'],discount:10,color:'#fbbf24',img:'https://images.unsplash.com/photo-1509440159596-0249088772ff?w=600',desc:'ร้านนมสดและขนมปังย่างถ่าน ตรงข้ามมหิดล นั่งจิบกาแฟแบบสบายๆ'},
+  {id:'r4',name:'Korae Korean BBQ',emoji:'🥩',cuisine:'เกาหลี',lat:13.7935,lng:100.3260,rating:4.4,reviews:312,priceRange:350,hours:'17:00-23:00',distance:'0.3 กม.',tags:['BBQ','บุฟเฟ่ต์','เกาหลี'],discount:15,color:'#dc2626',img:'https://images.unsplash.com/photo-1632558147849-39a4c3a72f0d?w=600',desc:'Korean BBQ บุฟเฟ่ต์ 350 บาท คุ้มที่สุดในศาลายา หมูเชียลเด็ด มี banchan ครบ'},
+  {id:'r5',name:'Santoku Ramen',emoji:'🍜',cuisine:'ญี่ปุ่น',lat:13.7918,lng:100.3245,rating:4.5,reviews:267,priceRange:200,hours:'11:00-23:00',distance:'0.3 กม.',tags:['ราเมง','ญี่ปุ่น','late night'],discount:12,color:'#7c3aed',img:'https://images.unsplash.com/photo-1623341214825-9f4f963727da?w=600',desc:'ราเมงญี่ปุ่นเปิดดึก เจ้าโปรดของนักศึกษามหิดลที่ต้องเรียนค่ำ น้ำซุปเข้มข้น'},
+  {id:'r6',name:'Little Tree Grocery',emoji:'☕',cuisine:'คาเฟ่',lat:13.7980,lng:100.3210,rating:4.6,reviews:198,priceRange:180,hours:'08:00-20:00',distance:'0.6 กม.',tags:['กาแฟ','เบเกอรี่','สวน'],discount:12,color:'#92400e',img:'https://images.unsplash.com/photo-1453614512568-c4024d13c247?w=600',desc:'คาเฟ่บ้านไม้บรรยากาศคันทรี มีต้นไม้ใหญ่และสวนหลังบ้าน เหมาะนั่งทำงาน'},
+  {id:'r7',name:'Tianti Chicken Rice',emoji:'🍗',cuisine:'ไทย',lat:13.7912,lng:100.3268,rating:4.4,reviews:156,priceRange:80,hours:'10:00-21:00',distance:'0.4 กม.',tags:['ข้าวมันไก่','สมุนไพร','สุขภาพดี'],discount:10,color:'#65a30d',img:'https://images.unsplash.com/photo-1626804475297-41608ea09aeb?w=600',desc:'ข้าวมันไก่เลี้ยงด้วยสมุนไพรและโพรไบโอติกส์ เนื้อนุ่มหอม'},
+  {id:'r8',name:'โกวเล็กสุกี้ฮ่องกง',emoji:'🍲',cuisine:'จีน',lat:13.7925,lng:100.3275,rating:4.3,reviews:188,priceRange:200,hours:'11:00-22:00',distance:'0.4 กม.',tags:['สุกี้','กุ้งอบวุ้นเส้น','ฮ่องกง'],discount:12,color:'#ec4899',img:'https://images.unsplash.com/photo-1582879304171-8041a7503f6a?w=600',desc:'สุกี้ฮ่องกงน้ำจิ้มหอม กุ้งอบวุ้นเส้นเด็ด ทุกโต๊ะต้องสั่ง'},
+  {id:'r9',name:'มันม่วงขนมไข่เต่า',emoji:'🥧',cuisine:'ของว่าง',lat:13.7940,lng:100.3255,rating:4.6,reviews:421,priceRange:30,hours:'09:00-19:00',distance:'0.0 กม.',tags:['มันม่วง','ขนมไข่เต่า','ของว่าง'],discount:5,color:'#a855f7',img:'https://images.unsplash.com/photo-1587244141194-2af86d4f9fa9?w=600',desc:'ขนมไข่เต่าหน้ามหิดล แป้งกรอบ ข้างในเส้นใยมันม่วงนุ่ม หวานธรรมชาติ ลูกใหญ่'},
+  {id:'r10',name:'ก๋วยเตี๋ยวเรือศาลายา',emoji:'🍜',cuisine:'ไทย',lat:13.7935,lng:100.3265,rating:4.6,reviews:512,priceRange:50,hours:'09:00-20:00',distance:'0.3 กม.',tags:['ก๋วยเตี๋ยว','ราคาถูก','เด็ด'],discount:8,color:'#f97316',img:'https://images.unsplash.com/photo-1569718212165-3a8278d5f624?w=600',desc:'ก๋วยเตี๋ยวเรือชามละ 25 บาท น้ำซุปเข้มข้น เปิดมานานเป็นที่นิยมของนักศึกษา'},
+  {id:'r11',name:'Mahidol Food Center',emoji:'🍛',cuisine:'ไทย',lat:13.7945,lng:100.3245,rating:4.0,reviews:621,priceRange:60,hours:'07:00-19:00',distance:'0.0 กม.',tags:['ในม.','ราคาประหยัด','street food'],discount:5,color:'#0ea5e9',img:'https://images.unsplash.com/photo-1559314809-0d155014e29e?w=600',desc:'ศูนย์อาหารใน ม.มหิดล มีอาหารหลากหลาย ราคานักศึกษา'},
+  {id:'r12',name:"ปู๊ตี่ บะหมี่เกี๊ยวกุ้ง",emoji:'🍤',cuisine:'จีน',lat:13.7942,lng:100.3262,rating:4.5,reviews:278,priceRange:70,hours:'08:00-20:00',distance:'0.2 กม.',tags:['บะหมี่','เกี๊ยวกุ้ง','หมูแดง'],discount:8,color:'#fb923c',img:'https://images.unsplash.com/photo-1591814468924-caf88d1232e1?w=600',desc:'เกี๊ยวชิ้นใหญ่ เนื้อแน่น หมูแดงเด็ด เป็นที่นิยมของนักศึกษามหิดล'},
+  {id:'r13',name:'ฮั่วเซ่งฮง ศาลายา',emoji:'🥟',cuisine:'จีน',lat:13.7928,lng:100.3271,rating:4.4,reviews:389,priceRange:250,hours:'10:00-22:00',distance:'0.4 กม.',tags:['ติ่มซำ','ขนมจีบ','ซาลาเปา'],discount:10,color:'#b91c1c',img:'https://images.unsplash.com/photo-1496116218417-1a781b1c416c?w=600',desc:'ร้านอาหารจีนเลื่องชื่อตรงข้าม ม.มหิดล ติ่มซำเด็ด ขนมจีบและซาลาเปาเด่น ข้าวหน้าเป็ดอร่อย'},
+  {id:'r14',name:'ศรีจันทร์ ซีฟู้ด',emoji:'🦐',cuisine:'ซีฟู้ด',lat:13.7910,lng:100.3265,rating:4.3,reviews:826,priceRange:180,hours:'17:00-01:00',distance:'0.3 กม.',tags:['ข้าวต้ม','ซีฟู้ด','รอบดึก'],discount:10,color:'#1e40af',img:'https://images.unsplash.com/photo-1565299624946-b28f40a0ae38?w=600',desc:'ข้าวต้มและซีฟู้ดรอบดึก เปิดถึงเที่ยงคืน เหมาะคนหิวค่ำคืน ไข่เจียวเด็ด'},
+  {id:'r15',name:'พุทธรักษา 2 เป็ดพะโล้',emoji:'🦆',cuisine:'จีน',lat:13.7918,lng:100.3258,rating:4.4,reviews:648,priceRange:90,hours:'09:00-21:00',distance:'0.2 กม.',tags:['เป็ดพะโล้','ข้าวหน้าเป็ด'],discount:8,color:'#92400e',img:'https://images.unsplash.com/photo-1582450871972-ab5ca641643d?w=600',desc:'เป็ดพะโล้นุ่ม รสชาติดี ข้าวหน้าเป็ดและก๋วยเตี๋ยวเป็ดเด็ด ตรงข้าม ม.มหิดล'},
+  {id:'r16',name:'CMD Salaya Café',emoji:'🥗',cuisine:'คาเฟ่',lat:13.7965,lng:100.3215,rating:4.4,reviews:204,priceRange:150,hours:'07:30-19:00',distance:'0.3 กม.',tags:['คาเฟ่','salmon','eel'],discount:12,color:'#0891b2',img:'https://images.unsplash.com/photo-1565958011703-44f9829ba187?w=600',desc:'ร้านเล็กน่ารัก แอร์เย็น แซลมอนนุ่ม ปลาไหล XL คุ้มมาก ใกล้มหิดลศาลายา'},
+  {id:'r17',name:'Hangar Café',emoji:'☕',cuisine:'คาเฟ่',lat:13.7975,lng:100.3225,rating:4.3,reviews:167,priceRange:130,hours:'08:00-20:00',distance:'0.5 กม.',tags:['กาแฟ','wifi','ทำงาน'],discount:10,color:'#0d9488',img:'https://images.unsplash.com/photo-1554118811-1e0d58224f24?w=600',desc:'คาเฟ่บรรยากาศโล่ง wifi เร็ว เหมาะนั่งทำงาน อ่านหนังสือ'},
+  {id:'r18',name:'แซ่บนัว ครัวบ้านนา',emoji:'🌶️',cuisine:'อีสาน',lat:13.7918,lng:100.3290,rating:4.5,reviews:234,priceRange:180,hours:'11:00-21:00',distance:'0.4 กม.',tags:['อีสาน','ส้มตำ','ปูดอง'],discount:12,color:'#dc2626',img:'https://images.unsplash.com/photo-1631292784640-2b24be784d5d?w=600',desc:'อาหารอีสานจัดจ้าน ส้มตำ ปูดอง กุ้งเผา บรรยากาศสวนต้นไม้ร่มรื่น'},
+  {id:'r19',name:'นิยมแซ่บ',emoji:'🍤',cuisine:'อีสาน',lat:13.7905,lng:100.3280,rating:4.4,reviews:156,priceRange:200,hours:'11:00-22:00',distance:'0.5 กม.',tags:['ส้มตำ','ปูดอง','ครอบครัว'],discount:10,color:'#ea580c',img:'https://images.unsplash.com/photo-1589647363585-f4a7d3877b10?w=600',desc:'แซ่บจัดเต็ม ส้มตำ ปูดอง กุ้งเผา บรรยากาศสวน เต็มไปด้วยต้นไม้ร่มรื่น'},
+  {id:'r20',name:'กลมกล่อม ศาลายา',emoji:'🥘',cuisine:'ไทย',lat:13.7958,lng:100.3268,rating:4.3,reviews:189,priceRange:220,hours:'10:00-21:00',distance:'0.2 กม.',tags:['คาเฟ่','ถ่ายรูป','natural'],discount:10,color:'#16a34a',img:'https://images.unsplash.com/photo-1567337710282-00832b415979?w=600',desc:'ร้านอาหารกึ่งคาเฟ่ตรงข้ามมหิดล หลายโซนถ่ายรูปสวย ของคาวหวานครบ'},
+  {id:'r21',name:'Salaya Pad Thai',emoji:'🍝',cuisine:'ไทย',lat:13.7910,lng:100.3260,rating:4.3,reviews:273,priceRange:80,hours:'10:00-22:00',distance:'0.3 กม.',tags:['ผัดไทย','ราคาถูก','street food'],discount:10,color:'#f97316',img:'https://images.unsplash.com/photo-1559314809-0d155014e29e?w=600',desc:'ร้านผัดไทยเจ้าเก่าศาลายา รสชาติเข้มข้น เส้นเหนียว ราคาประหยัด'},
+  {id:'r22',name:'Tia Tia Bingsu',emoji:'🍧',cuisine:'ของหวาน',lat:13.7942,lng:100.3258,rating:4.2,reviews:96,priceRange:100,hours:'11:00-21:00',distance:'0.3 กม.',tags:['บิงซู','ของหวาน'],discount:10,color:'#ec4899',img:'https://images.unsplash.com/photo-1488477181946-6428a0291777?w=600',desc:'บิงซูและของหวานสดชื่น หลายไซรัปและท็อปปิ้งให้เลือก'},
 ];
 
 const SAMPLE_REVIEWS={
@@ -1203,34 +1224,37 @@ const DEMO_USER_KEY='motoguard:demo_user';
 
 let fbApp=null,fbAuth=null,fbDb=null;
 let currentUser=null;
-let isFirebaseMode=false;
+let isFirebaseMode=false;     // user is logged in with email/password
+let firebaseConnected=false;  // Firebase is initialized — shared data syncs even without login
 let knownReportIds=new Set();
 let lastSeenAccidentTime=0;
 let lastAccidentReport=null;
 let unsubReports=null;
 
-// Storage abstraction: Firebase shared DB if available, else localStorage
+// Storage abstraction:
+// - SHARED data (reports, reviews) → Firebase if connected (everyone sees same), else localStorage
+// - PRIVATE user data (points, missions) → Firebase if logged in, else localStorage per user
 const Store={
   async getReports(){
-    if(isFirebaseMode){
+    if(firebaseConnected){
       return new Promise(res=>{fbDb.ref('reports').once('value',s=>{const v=s.val()||{};res(Object.values(v))}).catch(()=>res([]))});
     }
     try{const r=localStorage.getItem('mg:reports');return r?JSON.parse(r):[]}catch{return[]}
   },
   async addReport(r){
-    if(isFirebaseMode)return fbDb.ref('reports/'+r.id).set(r);
+    if(firebaseConnected)return fbDb.ref('reports/'+r.id).set(r);
     const all=await this.getReports();all.push(r);
     localStorage.setItem('mg:reports',JSON.stringify(all));
     try{bc.postMessage({type:'reports-updated'})}catch{}
   },
   async getReviews(){
-    if(isFirebaseMode){
+    if(firebaseConnected){
       return new Promise(res=>{fbDb.ref('reviews').once('value',s=>res(s.val()||{})).catch(()=>res({}))});
     }
     try{const r=localStorage.getItem('mg:reviews');return r?JSON.parse(r):{}}catch{return{}}
   },
   async addReview(rid,rv){
-    if(isFirebaseMode)return fbDb.ref('reviews/'+rid).push(rv);
+    if(firebaseConnected)return fbDb.ref('reviews/'+rid).push(rv);
     const all=await this.getReviews();
     if(!all[rid])all[rid]=[];
     all[rid].unshift(rv);
@@ -1251,7 +1275,7 @@ const Store={
   },
   listenReports(cb){
     if(unsubReports){try{unsubReports()}catch{}}
-    if(isFirebaseMode){
+    if(firebaseConnected){
       const ref=fbDb.ref('reports');
       const h=ref.on('value',s=>{const v=s.val()||{};cb(Object.values(v))});
       unsubReports=()=>ref.off('value',h);
@@ -1282,16 +1306,17 @@ function tryInitFirebase(){
   let cfg=FB_CONFIG;
   if(!cfg||!cfg.apiKey){
     const s=localStorage.getItem(FB_CONFIG_KEY);
-    if(!s)return false;
-    try{cfg=JSON.parse(s)}catch{return false}
+    if(!s){firebaseConnected=false;return false}
+    try{cfg=JSON.parse(s)}catch{firebaseConnected=false;return false}
   }
   try{
     if(fbApp){try{fbApp.delete()}catch{}}
     fbApp=firebase.initializeApp(cfg);
     fbAuth=firebase.auth();
     fbDb=firebase.database();
+    firebaseConnected=true;
     return true;
-  }catch(e){console.error('FB init',e);return false}
+  }catch(e){console.error('FB init',e);firebaseConnected=false;return false}
 }
 
 async function doSignIn(){
@@ -1466,7 +1491,9 @@ function updateAllDisplays(){
   const hr=document.getElementById('hero-reports');if(hr)hr.textContent=userReportCount;
   const bs=document.getElementById('best-score');if(bs)bs.textContent=bestScore;
   const md=document.getElementById('missions-done');if(md)md.textContent=Object.keys(completedMissions).length;
-  document.getElementById('server-status').textContent=isFirebaseMode?`MotoServer · Live · ${allReports.length}`:`MotoServer · Demo · ${allReports.length}`;
+  // Server pill: Live = Firebase connected (any user), Offline = no Firebase
+  const statusLabel=firebaseConnected?(isFirebaseMode?'Live':'Live·Demo'):'Offline';
+  document.getElementById('server-status').textContent=`MotoServer · ${statusLabel} · ${allReports.length}`;
   const accCount=allReports.filter(r=>r.type==='accident').length;
   const sr=document.getElementById('stat-red');if(sr)sr.textContent=25+Math.floor(allReports.length/2);
   const ss=document.getElementById('stat-speed');if(ss)ss.textContent=50+accCount*3;
@@ -1499,7 +1526,7 @@ function updateAllDisplays(){
   }else{
     if(banner)banner.style.display='block';
     if(emailEl)emailEl.textContent='ยังไม่ได้เข้าสู่ระบบ';
-    if(modeEl)modeEl.textContent='💻 Demo (Local)';
+    if(modeEl)modeEl.textContent=firebaseConnected?'💻 Demo · Live sync':'💻 Demo · Offline';
     if(actIcon)actIcon.textContent='🔐';
     if(actText)actText.textContent='เข้าสู่ระบบ / สมัครสมาชิก';
     if(actCard)actCard.style.background='linear-gradient(135deg,#dbeafe,#bfdbfe)';
@@ -1684,13 +1711,16 @@ async function submitReport(){
     userName:currentUser?.displayName||'ผู้ใช้',
   };
   await Store.addReport(report);
-  if(!isFirebaseMode){
+  // Optimistically add locally so UI updates immediately
+  if(!allReports.find(r=>r.id===report.id)){
     allReports.push(report);
     knownReportIds.add(report.id);
     userReportCount++;
   }
   userPoints+=25;
   await saveUser();
+  // Refresh all displays so user sees the new report immediately
+  refreshHeatmap();refreshDashMap();renderNotifications();renderDashboard();updateAllDisplays();
   showToast(currentReportType==='accident'?'🚨 ส่งแจ้งเตือนถึงทุกคนแล้ว · +25 Points':'✅ ส่งไป MotoServer · +25 Points');
   setTimeout(()=>navigate('home'),800);
 }
@@ -1921,13 +1951,283 @@ function renderMissions(){
 async function completeMission(id){
   const m=MISSIONS.find(x=>x.id===id);
   if(!m||completedMissions[id])return;
+  // Route to proper interactive mission
+  if(id==='helmet')return openHelmetMission();
+  if(id==='quiz')return openQuizMission();
+  if(id==='register')return openRegisterMission();
+  if(id==='speed-check')return openSpeedCheckMission();
+  if(id==='survey')return openSurveyMission();
   if(id==='review'){showToast('ไปรีวิวร้านใน MotoGuide กันก่อน!','warn');setTimeout(()=>navigate('guide'),800);return}
-  if(id==='report5'&&userReportCount<5){showToast(`ต้องรายงานอีก ${5-userReportCount} จุด`,'warn');return}
+  if(id==='report5'){
+    if(userReportCount<5){showToast(`ต้องรายงานอีก ${5-userReportCount} จุด`,'warn');setTimeout(()=>navigate('report'),800);return}
+    return finalizeMission(id);
+  }
+}
+
+async function finalizeMission(id){
+  const m=MISSIONS.find(x=>x.id===id);
+  if(!m||completedMissions[id])return;
   completedMissions[id]=Date.now();
   userPoints+=m.points;
   await saveUser();
+  closeMissionModal();
   renderMissions();
   showToast(`✓ ภารกิจสำเร็จ! +${m.points} Moto Points`);
+}
+
+function openMissionModal(html){
+  document.getElementById('mission-modal-content').innerHTML=html;
+  document.getElementById('mission-modal').classList.add('show');
+}
+function closeMissionModal(){
+  document.getElementById('mission-modal').classList.remove('show');
+}
+
+// ====== Mission 1: Helmet photo upload ======
+function openHelmetMission(){
+  openMissionModal(`
+    <div style="text-align:center;">
+      <div class="modal-icon">🪖</div>
+      <div class="modal-title">ส่งภาพสวมหมวกกันน็อก</div>
+      <div class="modal-text">ถ่ายรูปหรืออัปโหลดภาพคุณกำลังสวมหมวกกันน็อก เพื่อยืนยันการขับขี่อย่างปลอดภัย</div>
+    </div>
+    <label class="photo-upload" for="helmet-photo" style="margin-bottom:12px;">
+      <span class="photo-upload-icon" id="helmet-icon">📷</span>
+      <span class="photo-upload-text" id="helmet-text">แตะเพื่อถ่ายภาพ / เลือกรูป</span>
+      <img id="helmet-preview" style="display:none;">
+      <input type="file" accept="image/*" capture="user" id="helmet-photo" onchange="previewHelmet(event)">
+    </label>
+    <div class="modal-buttons">
+      <button class="modal-btn secondary" onclick="closeMissionModal()">ยกเลิก</button>
+      <button class="modal-btn primary" id="helmet-submit-btn" disabled onclick="finalizeMission('helmet')">📤 ส่ง · +100</button>
+    </div>
+  `);
+}
+function previewHelmet(e){
+  const f=e.target.files[0];if(!f)return;
+  const r=new FileReader();
+  r.onload=ev=>{
+    const img=document.getElementById('helmet-preview');
+    img.src=ev.target.result;img.style.display='block';
+    document.getElementById('helmet-icon').style.display='none';
+    document.getElementById('helmet-text').style.display='none';
+    document.getElementById('helmet-submit-btn').disabled=false;
+  };
+  r.readAsDataURL(f);
+}
+
+// ====== Mission 2: Quiz ======
+const QUIZ_QUESTIONS=[
+  {q:'ความเร็วสูงสุดที่อนุญาตของรถจักรยานยนต์ในเขตเทศบาลคือเท่าไร?',a:['60 กม./ชม.','80 กม./ชม.','100 กม./ชม.','120 กม./ชม.'],correct:0},
+  {q:'ขณะขับขี่บนถนนเปียก ระยะเบรกจะเป็นอย่างไร?',a:['สั้นกว่าปกติ','เท่าเดิม','ยาวขึ้น 2-3 เท่า','ไม่เกี่ยวกัน'],correct:2},
+  {q:'หมวกกันน็อกที่ปลอดภัยควรมีมาตรฐานอะไร?',a:['มอก.','สวยงาม','ราคาถูก','สีเข้ม'],correct:0},
+  {q:'เมื่อเลี้ยวซ้าย ควรเปิดสัญญาณไฟล่วงหน้ากี่เมตร?',a:['10 เมตร','30 เมตร','60 เมตร','100 เมตร'],correct:1},
+  {q:'ปริมาณแอลกอฮอล์ในเลือดสูงสุดที่กฎหมายอนุญาตขณะขับขี่?',a:['20 mg%','50 mg%','80 mg%','100 mg%'],correct:1},
+];
+let quizState={current:0,score:0,answered:false};
+function openQuizMission(){
+  quizState={current:0,score:0,answered:false};
+  renderQuiz();
+}
+function renderQuiz(){
+  const q=QUIZ_QUESTIONS[quizState.current];
+  if(!q){
+    // Done
+    const passed=quizState.score>=3;
+    openMissionModal(`
+      <div style="text-align:center;">
+        <div class="modal-icon">${passed?'🎉':'😅'}</div>
+        <div class="modal-title">${passed?'ผ่านแล้ว!':'ลองอีกครั้ง'}</div>
+        <div class="modal-text">คุณตอบถูก ${quizState.score}/${QUIZ_QUESTIONS.length} ข้อ</div>
+        <div class="modal-buttons">
+          <button class="modal-btn secondary" onclick="closeMissionModal()">ปิด</button>
+          ${passed?`<button class="modal-btn primary" onclick="finalizeMission('quiz')">✓ รับ +50 Points</button>`:`<button class="modal-btn primary" onclick="openQuizMission()">🔄 ลองใหม่</button>`}
+        </div>
+      </div>
+    `);
+    return;
+  }
+  openMissionModal(`
+    <div style="text-align:center;margin-bottom:14px;">
+      <div style="font-size:11px;color:var(--muted);font-weight:600;">คำถามที่ ${quizState.current+1} / ${QUIZ_QUESTIONS.length}</div>
+      <div style="height:6px;background:var(--bg);border-radius:3px;margin-top:6px;overflow:hidden;">
+        <div style="height:100%;background:linear-gradient(90deg,var(--gold),var(--gold-deep));width:${(quizState.current/QUIZ_QUESTIONS.length)*100}%;transition:width 0.3s;"></div>
+      </div>
+    </div>
+    <div style="font-size:14px;font-weight:700;color:var(--navy);margin-bottom:14px;line-height:1.5;">${q.q}</div>
+    <div id="quiz-options">
+      ${q.a.map((opt,i)=>`<button class="quiz-opt" onclick="answerQuiz(${i})" style="display:block;width:100%;text-align:left;padding:12px 14px;margin-bottom:8px;background:var(--bg);border:2px solid transparent;border-radius:10px;font-family:inherit;font-size:13px;cursor:pointer;color:var(--text);">${String.fromCharCode(65+i)}. ${opt}</button>`).join('')}
+    </div>
+  `);
+}
+function answerQuiz(idx){
+  if(quizState.answered)return;
+  quizState.answered=true;
+  const q=QUIZ_QUESTIONS[quizState.current];
+  const opts=document.querySelectorAll('.quiz-opt');
+  opts.forEach((o,i)=>{
+    o.disabled=true;
+    if(i===q.correct){o.style.background='#d1fae5';o.style.borderColor='#16a34a';o.style.color='#065f46'}
+    else if(i===idx){o.style.background='#fee2e2';o.style.borderColor='#dc2626';o.style.color='#991b1b'}
+  });
+  if(idx===q.correct)quizState.score++;
+  setTimeout(()=>{
+    quizState.current++;quizState.answered=false;
+    renderQuiz();
+  },1200);
+}
+
+// ====== Mission 3: Register for safety training ======
+function openRegisterMission(){
+  openMissionModal(`
+    <div style="text-align:center;">
+      <div class="modal-icon">🎓</div>
+      <div class="modal-title">ลงทะเบียนอบรมขับขี่ปลอดภัย</div>
+      <div class="modal-text">การอบรม 2 ชม. ออนไลน์<br>โดย กรมการขนส่งทางบก</div>
+    </div>
+    <div style="background:var(--bg);border-radius:12px;padding:12px;margin-bottom:12px;font-size:12px;line-height:1.7;">
+      <b style="color:var(--navy);">📅 รอบที่จะมาถึง:</b><br>
+      • วันเสาร์ที่ 24 พ.ค. — 09:00-11:00<br>
+      • วันอาทิตย์ที่ 25 พ.ค. — 13:00-15:00<br>
+      • วันเสาร์ที่ 31 พ.ค. — 09:00-11:00
+    </div>
+    <div class="auth-input-wrap">
+      <label class="auth-input-label">ชื่อ-สกุล</label>
+      <input type="text" class="auth-input" id="reg-name" placeholder="ชื่อ-สกุลตามบัตรประชาชน">
+    </div>
+    <div class="auth-input-wrap">
+      <label class="auth-input-label">เบอร์โทร</label>
+      <input type="tel" class="auth-input" id="reg-phone" placeholder="0XX-XXX-XXXX">
+    </div>
+    <div class="auth-input-wrap">
+      <label class="auth-input-label">เลือกรอบ</label>
+      <select class="form-select" id="reg-slot" style="width:100%;">
+        <option value="">-- เลือกรอบ --</option>
+        <option>เสาร์ 24 พ.ค.</option>
+        <option>อาทิตย์ 25 พ.ค.</option>
+        <option>เสาร์ 31 พ.ค.</option>
+      </select>
+    </div>
+    <div class="modal-buttons" style="margin-top:14px;">
+      <button class="modal-btn secondary" onclick="closeMissionModal()">ยกเลิก</button>
+      <button class="modal-btn primary" onclick="submitRegister()">📤 ลงทะเบียน · +200</button>
+    </div>
+  `);
+}
+function submitRegister(){
+  const name=document.getElementById('reg-name').value.trim();
+  const phone=document.getElementById('reg-phone').value.trim();
+  const slot=document.getElementById('reg-slot').value;
+  if(!name||!phone||!slot){showToast('กรุณากรอกข้อมูลให้ครบ','error');return}
+  if(!/^[0-9-]{9,12}$/.test(phone)){showToast('เบอร์โทรไม่ถูกต้อง','error');return}
+  finalizeMission('register');
+  showToast(`✓ ลงทะเบียนเรียบร้อย — รอบ ${slot}`);
+}
+
+// ====== Mission 4: Speed check (real GPS) ======
+function openSpeedCheckMission(){
+  openMissionModal(`
+    <div style="text-align:center;">
+      <div class="modal-icon">🏍️</div>
+      <div class="modal-title">ตรวจสอบความเร็ว</div>
+      <div class="modal-text">เปิด GPS เพื่อตรวจวัดความเร็วในการขับขี่<br>ขับไม่เกิน 60 กม./ชม. เป็นเวลา 30 วินาที</div>
+    </div>
+    <div id="speed-display" style="background:#0f172a;color:#4ade80;font-family:'Bebas Neue',sans-serif;font-size:60px;text-align:center;padding:24px;border-radius:14px;margin-bottom:12px;letter-spacing:2px;">
+      0 <span style="font-size:18px;color:#94a3b8;">km/h</span>
+    </div>
+    <div style="display:flex;justify-content:space-between;font-size:12px;margin-bottom:14px;">
+      <span style="color:var(--muted);">⏱️ <span id="speed-timer">0</span>s / 30s</span>
+      <span style="color:var(--muted);">🚦 ขีดจำกัด: 60 km/h</span>
+    </div>
+    <div style="display:flex;gap:8px;">
+      <button class="modal-btn secondary" onclick="stopSpeedCheck()">หยุด</button>
+      <button class="modal-btn primary" id="speed-start-btn" onclick="startSpeedCheck()">▶ เริ่มตรวจ</button>
+    </div>
+    <div id="speed-status" style="text-align:center;font-size:11px;color:var(--muted);margin-top:8px;"></div>
+  `);
+}
+let speedWatch=null,speedTimer=null;
+function startSpeedCheck(){
+  if(!navigator.geolocation){showToast('เบราว์เซอร์ไม่รองรับ GPS','error');return}
+  document.getElementById('speed-start-btn').disabled=true;
+  document.getElementById('speed-start-btn').textContent='กำลังตรวจ...';
+  document.getElementById('speed-status').textContent='🔍 รอสัญญาณ GPS...';
+  let elapsed=0;
+  speedTimer=setInterval(()=>{
+    elapsed++;
+    document.getElementById('speed-timer').textContent=elapsed;
+    if(elapsed>=30){
+      stopSpeedCheck();
+      document.getElementById('speed-status').innerHTML='<b style="color:var(--green);">✓ ผ่าน! ขับขี่ปลอดภัย</b>';
+      setTimeout(()=>finalizeMission('speed-check'),1000);
+    }
+  },1000);
+  speedWatch=navigator.geolocation.watchPosition(pos=>{
+    const speed=pos.coords.speed?Math.round(pos.coords.speed*3.6):0;
+    document.getElementById('speed-display').innerHTML=`${speed} <span style="font-size:18px;color:#94a3b8;">km/h</span>`;
+    if(speed>60){
+      document.getElementById('speed-status').innerHTML='<b style="color:var(--red);">⚠️ ขับเร็วเกินกำหนด! ลดความเร็ว</b>';
+      document.getElementById('speed-display').style.color='#ef4444';
+    }else{
+      document.getElementById('speed-status').textContent='✓ ขับขี่ในความเร็วที่ปลอดภัย';
+      document.getElementById('speed-display').style.color='#4ade80';
+    }
+  },err=>{
+    document.getElementById('speed-status').innerHTML='<b style="color:var(--red);">❌ GPS ไม่พร้อม: '+err.message+'</b>';
+    stopSpeedCheck();
+  },{enableHighAccuracy:true,maximumAge:0});
+}
+function stopSpeedCheck(){
+  if(speedWatch!==null){navigator.geolocation.clearWatch(speedWatch);speedWatch=null}
+  if(speedTimer){clearInterval(speedTimer);speedTimer=null}
+  const btn=document.getElementById('speed-start-btn');
+  if(btn){btn.disabled=false;btn.textContent='▶ เริ่มตรวจ'}
+}
+
+// ====== Mission 5: Survey ======
+const SURVEY_QUESTIONS=[
+  {q:'คุณคิดว่าการสวมหมวกกันน็อกสำคัญแค่ไหน?',scale:['ไม่จำเป็น','สำคัญน้อย','ปานกลาง','สำคัญ','สำคัญมาก']},
+  {q:'คุณรู้สึกอย่างไรกับการขับขี่หลังดื่มแอลกอฮอล์?',scale:['ปลอดภัย','ค่อนข้างปลอดภัย','ปานกลาง','อันตราย','อันตรายมาก']},
+  {q:'คุณตรวจสอบสภาพรถก่อนใช้งานบ่อยแค่ไหน?',scale:['ไม่เคย','นานๆ ครั้ง','บ้าง','บ่อย','ทุกครั้ง']},
+  {q:'คุณเคารพกฎจราจรในชีวิตประจำวันแค่ไหน?',scale:['ไม่เลย','น้อย','ปานกลาง','มาก','สม่ำเสมอ']},
+];
+let surveyState={current:0,answers:[]};
+function openSurveyMission(){
+  surveyState={current:0,answers:[]};
+  renderSurvey();
+}
+function renderSurvey(){
+  const q=SURVEY_QUESTIONS[surveyState.current];
+  if(!q){
+    openMissionModal(`
+      <div style="text-align:center;">
+        <div class="modal-icon">📋</div>
+        <div class="modal-title">ขอบคุณที่ตอบแบบประเมิน!</div>
+        <div class="modal-text">คำตอบของคุณจะช่วยพัฒนาระบบขับขี่ปลอดภัย</div>
+        <div class="modal-buttons">
+          <button class="modal-btn primary" onclick="finalizeMission('survey')" style="width:100%;">✓ รับ +80 Points</button>
+        </div>
+      </div>
+    `);
+    return;
+  }
+  openMissionModal(`
+    <div style="text-align:center;margin-bottom:14px;">
+      <div style="font-size:11px;color:var(--muted);font-weight:600;">ข้อที่ ${surveyState.current+1} / ${SURVEY_QUESTIONS.length}</div>
+      <div style="height:6px;background:var(--bg);border-radius:3px;margin-top:6px;overflow:hidden;">
+        <div style="height:100%;background:linear-gradient(90deg,#6366f1,#8b5cf6);width:${(surveyState.current/SURVEY_QUESTIONS.length)*100}%;transition:width 0.3s;"></div>
+      </div>
+    </div>
+    <div style="font-size:14px;font-weight:700;color:var(--navy);margin-bottom:14px;line-height:1.5;">${q.q}</div>
+    <div>
+      ${q.scale.map((opt,i)=>`<button onclick="answerSurvey(${i})" style="display:block;width:100%;text-align:left;padding:11px 14px;margin-bottom:6px;background:var(--bg);border:2px solid transparent;border-radius:10px;font-family:inherit;font-size:13px;cursor:pointer;color:var(--text);">${i+1}. ${opt}</button>`).join('')}
+    </div>
+  `);
+}
+function answerSurvey(v){
+  surveyState.answers.push(v);
+  surveyState.current++;
+  renderSurvey();
 }
 
 // ============ MOTOGUIDE ============
@@ -1939,17 +2239,20 @@ function renderCuisineFilters(){
 function setCuisine(c){activeCuisine=c;renderCuisineFilters();renderRestaurants()}
 function renderRestaurants(){
   const list=document.getElementById('restaurants-list');if(!list)return;
+  // Update total count badge
+  const gc=document.getElementById('guide-count');if(gc)gc.textContent=RESTAURANTS.length;
   const q=(document.getElementById('guide-search-input').value||'').toLowerCase();
   let filtered=RESTAURANTS;
   if(activeCuisine!=='all')filtered=filtered.filter(r=>r.cuisine===activeCuisine);
   if(q)filtered=filtered.filter(r=>r.name.toLowerCase().includes(q)||r.cuisine.toLowerCase().includes(q)||r.tags.some(t=>t.toLowerCase().includes(q)));
+  const rc=document.getElementById('guide-result-count');if(rc)rc.textContent=filtered.length;
   if(filtered.length===0){list.innerHTML='<div class="empty-state"><div class="icon">🔍</div>ไม่พบร้านที่ค้นหา</div>';return}
   list.innerHTML=filtered.map(r=>{
     const isOpen=isRestaurantOpen(r.hours);
     const reviewCount=(allReviews[r.id]||[]).length+r.reviews;
     return `<div class="restaurant-card" onclick="openRestaurant('${r.id}')">
-      <div class="restaurant-photo" style="background:linear-gradient(135deg,${r.color}40,${r.color}80);">
-        ${r.emoji}
+      <div class="restaurant-photo" style="background:linear-gradient(135deg,${r.color}40,${r.color}80) url('${r.img}') center/cover;">
+        <div class="photo-emoji-fallback">${r.emoji}</div>
         <div class="open-tag ${isOpen?'':'closed'}">${isOpen?'● เปิดอยู่':'○ ปิดแล้ว'}</div>
         <div class="badge">⭐ ${r.rating}</div>
       </div>
@@ -1979,7 +2282,7 @@ function openRestaurant(id){
   navigate('restaurant-detail');
   const reviews=allReviews[id]||[];
   document.getElementById('restaurant-detail-content').innerHTML=`
-    <div class="detail-photo" style="background:linear-gradient(135deg,${r.color}40,${r.color}80);">${r.emoji}</div>
+    <div class="detail-photo" style="background:linear-gradient(135deg,${r.color}40,${r.color}80) url('${r.img}') center/cover;"><span style="position:absolute;bottom:8px;right:8px;background:rgba(15,23,42,0.7);color:#fff;padding:4px 10px;border-radius:10px;font-size:18px;backdrop-filter:blur(6px);">${r.emoji}</span></div>
     <div class="detail-name">${r.name}</div>
     <div class="detail-rating-row">
       <div class="detail-rating">
@@ -2221,12 +2524,17 @@ function startAsDemo(){
 
 // Same as onSignedIn but no welcome toast
 async function silentSignIn(user){
+  // Disconnect previous listeners (in case of re-login)
+  if(unsubReports){try{unsubReports()}catch{}unsubReports=null}
   currentUser=user;
   isFirebaseMode=user.mode==='firebase';
   const dot=document.querySelector('.server-dot');
-  if(dot)dot.className='server-dot'+(isFirebaseMode?'':' demo');
+  if(dot)dot.className='server-dot'+(firebaseConnected?'':' offline');
   await loadData();
   Store.listenReports(handleReportsUpdate);
+  // Refresh all visible UI
+  updateAllDisplays();
+  refreshHeatmap();refreshDashMap();renderNotifications();renderDashboard();
   setTimeout(initMainMap,200);
   navigate('home');
 }
