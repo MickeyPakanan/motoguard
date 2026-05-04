@@ -486,34 +486,7 @@ input[type="time"]::-webkit-calendar-picker-indicator,input[type="date"]::-webki
     <div class="auth-divider">หรือ</div>
     <div class="auth-secondary">
       <button class="auth-link-btn green" onclick="closeAuthOverlay()">🚀 ใช้แบบ Demo ต่อไป</button>
-      <button class="auth-link-btn gold" onclick="openConfigScreen()">⚙️ ตั้งค่า Firebase</button>
     </div>
-  </div>
-</div>
-
-<!-- FIREBASE CONFIG OVERLAY -->
-<div class="auth-overlay" id="config-overlay">
-  <div class="auth-card">
-    <div class="auth-logo">⚙️</div>
-    <div class="auth-title">ตั้งค่า Firebase</div>
-    <div class="auth-subtitle">เชื่อมต่อ MotoServer กลาง — ทุกคนเห็นข้อมูลเดียวกัน</div>
-    <div class="config-step"><b>1.</b> ไป <a href="https://console.firebase.google.com" target="_blank">console.firebase.google.com</a> → "Add project" สร้างโปรเจกต์</div>
-    <div class="config-step"><b>2.</b> Build → <b>Authentication</b> → "Get started" → เปิด <b>Email/Password</b></div>
-    <div class="config-step"><b>3.</b> Build → <b>Realtime Database</b> → "Create database" → <b>Start in test mode</b></div>
-    <div class="config-step"><b>4.</b> ⚙️ Project settings → กดไอคอน <code>&lt;/&gt;</code> สร้าง Web App → Copy <code>firebaseConfig</code></div>
-    <div class="auth-input-wrap" style="margin-top:12px;">
-      <label class="auth-input-label">วาง Firebase Config:</label>
-      <textarea class="config-textarea" id="firebase-config" placeholder='{
-  "apiKey": "AIza...",
-  "authDomain": "myapp.firebaseapp.com",
-  "databaseURL": "https://myapp-default-rtdb.firebaseio.com",
-  "projectId": "myapp",
-  ...
-}'></textarea>
-    </div>
-    <div class="auth-error" id="config-error"></div>
-    <button class="auth-submit" onclick="saveFirebaseConfig()" style="margin-top:8px;">💾 บันทึกและเชื่อมต่อ</button>
-    <button class="auth-link-btn" onclick="closeConfigScreen()" style="margin-top:8px;">← กลับ</button>
   </div>
 </div>
 
@@ -931,10 +904,6 @@ input[type="time"]::-webkit-calendar-picker-indicator,input[type="date"]::-webki
         <div class="row-left"><span class="row-icon">🔌</span> โหมด</div>
         <span class="version-text" id="profile-mode-display">💻 Demo</span>
       </div>
-      <div class="settings-row" onclick="openConfigScreen()">
-        <div class="row-left"><span class="row-icon">⚙️</span> ตั้งค่า Firebase</div>
-        <span class="arrow">›</span>
-      </div>
     </div>
     <div class="settings-card">
       <div class="settings-section-label">General</div>
@@ -1219,6 +1188,15 @@ const MISSIONS=[
 ];
 
 // ============ FIREBASE + AUTH + STORAGE ============
+const FB_CONFIG={
+  apiKey:"AIzaSyAXzD3zkKoWxZgXm_jbU8XMyv_Dmx-SkXA",
+  authDomain:"motoguard-344b6.firebaseapp.com",
+  databaseURL:"https://motoguard-344b6-default-rtdb.asia-southeast1.firebasedatabase.app",
+  projectId:"motoguard-344b6",
+  storageBucket:"motoguard-344b6.firebasestorage.app",
+  messagingSenderId:"323726069357",
+  appId:"1:323726069357:web:935ab77b69f1b7d38f3964"
+};
 const FB_CONFIG_KEY='motoguard:fb_config';
 const AUTH_MODE_KEY='motoguard:auth_mode';
 const DEMO_USER_KEY='motoguard:demo_user';
@@ -1298,13 +1276,16 @@ function switchAuthTab(tab){
   document.getElementById('auth-error').classList.remove('show');
 }
 function showAuthError(m){const e=document.getElementById('auth-error');e.textContent=m;e.classList.add('show')}
-function showConfigError(m){const e=document.getElementById('config-error');e.textContent=m;e.classList.add('show');setTimeout(()=>e.classList.remove('show'),5000)}
 
 function tryInitFirebase(){
-  const s=localStorage.getItem(FB_CONFIG_KEY);
-  if(!s)return false;
+  // Use hardcoded config if available, else fallback to stored config
+  let cfg=FB_CONFIG;
+  if(!cfg||!cfg.apiKey){
+    const s=localStorage.getItem(FB_CONFIG_KEY);
+    if(!s)return false;
+    try{cfg=JSON.parse(s)}catch{return false}
+  }
   try{
-    const cfg=JSON.parse(s);
     if(fbApp){try{fbApp.delete()}catch{}}
     fbApp=firebase.initializeApp(cfg);
     fbAuth=firebase.auth();
@@ -1317,7 +1298,7 @@ async function doSignIn(){
   const email=document.getElementById('signin-email').value.trim();
   const pwd=document.getElementById('signin-password').value;
   if(!email||!pwd){showAuthError('กรอกอีเมลและรหัสผ่าน');return}
-  if(!fbAuth&&!tryInitFirebase()){showAuthError('ยังไม่ได้ตั้งค่า Firebase — กด "ตั้งค่า Firebase"');return}
+  if(!fbAuth&&!tryInitFirebase()){showAuthError('ขณะนี้ระบบไม่สามารถเชื่อมต่อได้ กรุณาลองใหม่');return}
   const btn=document.getElementById('signin-btn');btn.disabled=true;btn.textContent='กำลังเข้าสู่ระบบ...';
   try{
     const r=await fbAuth.signInWithEmailAndPassword(email,pwd);
@@ -1332,7 +1313,7 @@ async function doSignUp(){
   const pwd=document.getElementById('signup-password').value;
   if(!name||!email||!pwd){showAuthError('กรอกข้อมูลให้ครบ');return}
   if(pwd.length<6){showAuthError('รหัสผ่านต้องอย่างน้อย 6 ตัว');return}
-  if(!fbAuth&&!tryInitFirebase()){showAuthError('ยังไม่ได้ตั้งค่า Firebase — กด "ตั้งค่า Firebase"');return}
+  if(!fbAuth&&!tryInitFirebase()){showAuthError('ขณะนี้ระบบไม่สามารถเชื่อมต่อได้ กรุณาลองใหม่');return}
   const btn=document.getElementById('signup-btn');btn.disabled=true;btn.textContent='กำลังสมัคร...';
   try{
     const r=await fbAuth.createUserWithEmailAndPassword(email,pwd);
@@ -1383,39 +1364,11 @@ async function onSignedIn(user){
   isFirebaseMode=user.mode==='firebase';
   localStorage.setItem(AUTH_MODE_KEY,user.mode);
   document.getElementById('auth-overlay').classList.remove('show');
-  document.getElementById('config-overlay').classList.remove('show');
   await loadData();
   Store.listenReports(handleReportsUpdate);
   refreshHeatmap();refreshDashMap();renderNotifications();renderDashboard();
   navigate('home');
   showToast(`ยินดีต้อนรับ ${user.displayName}!`);
-}
-
-function openConfigScreen(){
-  const c=localStorage.getItem(FB_CONFIG_KEY);
-  if(c)document.getElementById('firebase-config').value=c;
-  document.getElementById('config-overlay').classList.add('show');
-}
-function closeConfigScreen(){document.getElementById('config-overlay').classList.remove('show')}
-
-async function saveFirebaseConfig(){
-  let txt=document.getElementById('firebase-config').value.trim();
-  if(!txt){showConfigError('กรุณาวาง Firebase config');return}
-  let cfg;
-  try{
-    let cleaned=txt;
-    const m=txt.match(/\{[\s\S]*\}/);
-    if(m)cleaned=m[0];
-    cleaned=cleaned.replace(/(\w+):/g,'"$1":').replace(/'/g,'"').replace(/,(\s*[}\]])/g,'$1');
-    cfg=JSON.parse(cleaned);
-  }catch(e){showConfigError('Format ไม่ถูกต้อง: '+e.message);return}
-  if(!cfg.apiKey||!cfg.projectId){showConfigError('Config ขาด apiKey หรือ projectId');return}
-  if(!cfg.databaseURL)cfg.databaseURL='https://'+cfg.projectId+'-default-rtdb.firebaseio.com';
-  localStorage.setItem(FB_CONFIG_KEY,JSON.stringify(cfg));
-  if(tryInitFirebase()){
-    showToast('✓ เชื่อมต่อ Firebase สำเร็จ — กรุณาเข้าสู่ระบบ');
-    closeConfigScreen();
-  }else{showConfigError('เชื่อมต่อไม่สำเร็จ — ตรวจสอบ config')}
 }
 
 // ---------- ACCIDENT REAL-TIME ALERT ----------
@@ -2280,19 +2233,24 @@ async function silentSignIn(user){
 
 // ============ INIT ============
 (async function(){
-  // Try to restore previous Firebase login
-  const mode=localStorage.getItem(AUTH_MODE_KEY);
-  if(mode==='firebase'&&tryInitFirebase()){
+  // Auto-init Firebase on page load (config is hardcoded)
+  const fbReady=tryInitFirebase();
+  if(fbReady){
+    // Check if there's a previously logged-in Firebase user
+    let restored=false;
     fbAuth.onAuthStateChanged(user=>{
-      if(user){
+      if(restored)return;
+      restored=true;
+      if(user&&localStorage.getItem(AUTH_MODE_KEY)==='firebase'){
         silentSignIn({uid:user.uid,email:user.email,displayName:user.displayName||user.email.split('@')[0],mode:'firebase'});
       }else{
         startAsDemo();
       }
     });
-    // Fallback if onAuthStateChanged is slow
-    setTimeout(()=>{if(!currentUser)startAsDemo()},2000);
+    // Fallback if onAuthStateChanged doesn't fire within 2s
+    setTimeout(()=>{if(!currentUser){restored=true;startAsDemo()}},2000);
   }else{
+    // Firebase not available (offline?) — fall back to demo
     startAsDemo();
   }
 })();
